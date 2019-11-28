@@ -66,7 +66,7 @@ func refreshUserTable() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Successfully refreshed table")
+
 	return nil
 }
 
@@ -101,12 +101,10 @@ func seedUsers() ([]models.User, error) {
 			Password: "password",
 		},
 	}
-	log.Printf("seedUsers: users: %+v", users)
 
 	for i := range users {
 		err := server.DB.Model(&models.User{}).Create(&users[i]).Error
 		if err != nil {
-			log.Printf("Error seeding %+v", i)
 			return []models.User{}, err
 		}
 	}

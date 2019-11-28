@@ -51,7 +51,6 @@ func TestSignIn(t *testing.T) {
 
 		token, err := server.SignIn(v.email, v.password)
 		if err != nil {
-			t.Logf("ah: %s", v)
 			assert.Equal(t, err, errors.New(v.errorMessage))
 		} else {
 			assert.NotEqual(t, token, "")
@@ -67,7 +66,6 @@ func TestLogin(t *testing.T) {
 	if err != nil {
 		fmt.Printf("This is the error %v\n", err)
 	}
-	t.Logf("seededUser %+v", seededUser)
 	samples := []struct {
 		inputJSON    string
 		statusCode   int
@@ -113,7 +111,6 @@ func TestLogin(t *testing.T) {
 	}
 
 	for _, v := range samples {
-		t.Logf("v: %+v", v)
 		req, err := http.NewRequest("POST", "/login", bytes.NewBufferString(v.inputJSON))
 		if err != nil {
 			t.Errorf("this is the error: %v", err)
@@ -124,13 +121,11 @@ func TestLogin(t *testing.T) {
 
 		assert.Equal(t, rr.Code, v.statusCode)
 		if v.statusCode == http.StatusOK {
-			t.Logf("v: %+v", v)
 
 			assert.NotEqual(t, rr.Body.String(), "")
 		}
 
 		if v.statusCode == http.StatusUnprocessableEntity && v.errorMessage != "" {
-			t.Logf("v: %+v", v)
 
 			responseMap := make(map[string]interface{})
 			err = json.Unmarshal([]byte(rr.Body.String()), &responseMap)

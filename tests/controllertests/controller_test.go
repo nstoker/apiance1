@@ -125,7 +125,7 @@ func refreshUserAndPostTable() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Successfully refreshed tables")
+	// log.Printf("Successfully refreshed tables")
 	return nil
 }
 
