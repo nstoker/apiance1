@@ -5,7 +5,6 @@ import (
 	"log"
 	"testing"
 
-	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres driver
 	"github.com/neil-stoker/apiance1/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )

@@ -2,14 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/neil-stoker/apiance1/api/auth"
 	"github.com/neil-stoker/apiance1/api/models"
 	"github.com/neil-stoker/apiance1/api/responses"
 	"github.com/neil-stoker/apiance1/api/utils/formaterror"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Login logs a user in
@@ -49,16 +48,18 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 func (server *Server) SignIn(email, password string) (string, error) {
 
 	var err error
+	err = fmt.Errorf("Server:SignIn Not Implemented")
+	// user := models.User{}
 
-	user := models.User{}
+	// err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
+	// if err != nil {
+	// 	return "", err
+	// }
+	// err = models.VerifyPassword(user.Password, password)
+	// if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+	// 	return "", err
+	// }
+	// return auth.CreateToken(user.ID)
 
-	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
-	if err != nil {
-		return "", err
-	}
-	err = models.VerifyPassword(user.Password, password)
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return "", err
-	}
-	return auth.CreateToken(user.ID)
+	return "", err
 }
