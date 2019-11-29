@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -33,9 +32,7 @@ func Run() error {
 	if err := migrate.Perform(); err != nil {
 		return err
 	}
-	if server.DB == nil {
-		log.Fatal("server.DB is nil")
-	}
+
 	if err := seed.Load(server.DB); err != nil {
 		return err
 	}
