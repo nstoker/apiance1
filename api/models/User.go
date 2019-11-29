@@ -164,23 +164,9 @@ func (u *User) UpdateAUser(db *sqlx.DB, uid uint32) (*User, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
-	// 	map[string]interface{}{
-	// 		"password":  u.Password,
-	// 		"Name":      u.Name,
-	// 		"email":     u.Email,
-	// 		"update_at": time.Now(),
-	// 	},
-	// )
-	// if db.Error != nil {
-	// 	return &User{}, db.Error
-	// }
-	// // This is the display the updated user
-	// // err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
-	// if err != nil {
-	// 	return &User{}, err
-	// }
-	return u, fmt.Errorf("Not Implemented")
+	// See https://www.calhoun.io/updating-and-deleting-postgresql-records-using-gos-sql-package/
+	sqlStatement := `UPDATE users SET email=$2, name=$3 WHERE id=$4;`
+	return u, nil
 }
 
 // DeleteAUser deletes a user. Returning the number of rows deleted on success

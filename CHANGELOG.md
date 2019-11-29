@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Users: Seeding completed.
+
 ## 0.0.0 2019-11-29
 
 .1 release fixes some stupidity at the keyboard end of the project.
