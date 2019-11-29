@@ -7,8 +7,9 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/neil-stoker/apiance1/api/controllers"
-	"github.com/neil-stoker/apiance1/api/models"
+	"github.com/nstoker/apiance1/api/controllers"
+	"github.com/nstoker/apiance1/api/models"
+	"github.com/nstoker/apiance1/utils"
 )
 
 var server = controllers.Server{}
@@ -22,27 +23,32 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatalf("Error getting env %v\n", err)
 	}
-	Database()
+	err = server.Initialize(utils.GetDatabaseConnection())
+	if err != nil {
+		log.Printf("Error running server: %s", err)
+		os.Exit(1)
+	}
+
+	if err := dropTables(); err != nil {
+		log.Printf("Error dropping tables: %s", err)
+		os.Exit(2)
+	}
 
 	os.Exit(m.Run())
 }
 
-// Database a database
-func Database() {
+func dropTables() error {
+	tables := []string{"users"}
 
-	log.Fatal("Database Not Implemented")
-	// var err error
+	for _, t := range tables {
+		log.Printf("Dropping %s", t)
+		_, err := server.DB.Exec("DROP TABLE  $1", t)
+		if err != nil {
+			return fmt.Errorf("Error dropping '%s': %w", t, err)
+		}
+	}
 
-	// if TestDbDriver == "postgres" {
-	// 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", os.Getenv("TestDbHost"), os.Getenv("TestDbPort"), os.Getenv("TestDbUser"), os.Getenv("TestDbName"), os.Getenv("TestDbPassword"))
-	// 	server.DB, err = gorm.Open(TestDbDriver, DBURL)
-	// 	if err != nil {
-	// 		fmt.Printf("Cannot connect to %s database\n", TestDbDriver)
-	// 		log.Fatal("This is the error:", err)
-	// 	} else {
-	// 		fmt.Printf("We are connected to the %s database\n", TestDbDriver)
-	// 	}
-	// }
+	return nil
 }
 
 func refreshUserTable() error {
@@ -55,7 +61,7 @@ func refreshUserTable() error {
 	// 	return err
 	// }
 
-	return fmt.Errorf("refreshUserTable not implemented")
+	return nil
 }
 
 func seedOneUser() (models.User, error) {

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/neil-stoker/apiance1/api/models"
+	"github.com/nstoker/apiance1/api/models"
 )
 
 var users = []models.User{

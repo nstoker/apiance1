@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/neil-stoker/apiance1/api/auth"
-	"github.com/neil-stoker/apiance1/api/responses"
+	"github.com/nstoker/apiance1/api/auth"
+	"github.com/nstoker/apiance1/api/responses"
 )
 
 // SetMiddlewareJSON sets the middleware json
