@@ -145,16 +145,15 @@ func (u *User) FindUserByEmail(db *sqlx.DB, email string) (*User, error) {
 
 // FindUserByID finds a user by ... id
 func (u *User) FindUserByID(db *sqlx.DB, uid uint32) (*User, error) {
-	var err error
-	err = fmt.Errorf("Not Implemented")
-	// err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
-	// if err != nil {
-	// 	return &User{}, err
-	// }
-	// if gorm.IsRecordNotFoundError(err) {
-	// 	return &User{}, errors.New("User Not Found")
-	// }
-	return u, err
+	sqlStatement := `SELECT id, name, email, created_at, updated_at FROM users WHERE id=$1`
+
+	row := db.QueryRow(sqlStatement, uid)
+
+	err := row.Scan(&u.ID, &u.Name, &u.Email, &u.CreatedAt, &u.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
 }
 
 // UpdateAUser updates a user
@@ -184,13 +183,20 @@ func (u *User) UpdateAUser(db *sqlx.DB, uid uint32) (*User, error) {
 	return u, fmt.Errorf("Not Implemented")
 }
 
-// DeleteAUser deletes a user
-func (u *User) DeleteAUser(db *sqlx.DB, uid uint32) (int64, error) {
+// DeleteAUser deletes a user. Returning the number of rows deleted on success
+func (u *User) DeleteAUser(db *sqlx.DB, ID int64) (int64, error) {
+	sqlStatement := `DELETE FROM users WHERE id=$1`
 
-	// db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
+	res, err := db.Exec(sqlStatement, ID)
+	if err != nil {
+		return 0, err
+	}
 
-	// if db.Error != nil {
-	// 	return 0, db.Error
-	// }
-	return 0, fmt.Errorf("Not Implemented")
+	count, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("DeleteAUser error: %s", err)
+		return 0, err
+	}
+
+	return count, nil
 }
