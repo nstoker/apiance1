@@ -111,14 +111,25 @@ func (u *User) CreateUser(db *sqlx.DB) (*User, error) {
 
 // FindAllUsers finds all users
 func (u *User) FindAllUsers(db *sqlx.DB) (*[]User, error) {
-	var err error
 	users := []User{}
-	err = fmt.Errorf("Not Implemented")
-	// err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
-	// if err != nil {
-	// 	return &[]User{}, err
-	// }
-	return &users, err
+
+	rows, err := db.Query("SELECT id, email, name, created_at, updated_at FROM users ORDER BY id;")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		user := User{}
+		err = rows.Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+	return &users, nil
 }
 
 // FindUserByEmail finds a user by email
