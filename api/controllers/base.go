@@ -45,6 +45,6 @@ func (server *Server) InitializeRouter() error {
 
 // Run server, run. See server run
 func (server *Server) Run(addr string) error {
-	fmt.Println("Listening to port 8080")
+	fmt.Printf("Listening to port %s\n", addr)
 	return fmt.Errorf("base.Run(): %w", http.ListenAndServe(addr, server.Router))
 }
