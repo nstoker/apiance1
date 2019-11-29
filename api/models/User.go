@@ -17,7 +17,7 @@ import (
 type User struct {
 	ID        uint32       `json:"id"`
 	Name      string       `json:"name"`
-	Email     string       `json:"email"`
+	Email     string       `json:"email"` // Indexed as lowercase
 	Password  string       `json:"password"`
 	CreatedAt sql.NullTime `json:"created_at"`
 	UpdatedAt sql.NullTime `json:"updated_at"`
@@ -118,6 +118,15 @@ func (u *User) FindAllUsers(db *sqlx.DB) (*[]User, error) {
 	// 	return &[]User{}, err
 	// }
 	return &users, err
+}
+
+// FindUserByEmail finds a user by email
+func (u *User) FindUserByEmail(db *sqlx.DB, email string) (*User, error) {
+	sqlStatement := `SELECT id, name, email, created_at, updated_at FROM users WHERE email=$1`
+	row := db.QueryRow(sqlStatement, email)
+	err := row.Scan(&u.ID, u.Name, u.Email, u.CreatedAt, u.UpdatedAt)
+
+	return nil, err
 }
 
 // FindUserByID finds a user by ... id

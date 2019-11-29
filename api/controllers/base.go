@@ -6,7 +6,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
-	"github.com/nstoker/apiance1/api/migrate"
 )
 
 // Server server
@@ -15,8 +14,8 @@ type Server struct {
 	Router *mux.Router
 }
 
-// Initialize initialize
-func (server *Server) Initialize(databaseURI string) error {
+// InitializeDatabase initializes the database
+func (server *Server) InitializeDatabase(databaseURI string) error {
 
 	var err error
 
@@ -29,9 +28,13 @@ func (server *Server) Initialize(databaseURI string) error {
 		return fmt.Errorf("Server:Initialize error pinging %w", err)
 	}
 
-	if err := migrate.Perform(); err != nil {
-		return fmt.Errorf("Server:Initialize error migrating: %w", err)
-	}
+	server.DB = db
+
+	return nil
+}
+
+// InitializeRouter initialises the router
+func (server *Server) InitializeRouter() error {
 
 	server.Router = mux.NewRouter()
 
