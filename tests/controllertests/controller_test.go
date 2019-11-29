@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/neil-stoker/apiance1/api/controllers"
-	"github.com/neil-stoker/apiance1/api/models"
+	"github.com/nstoker/apiance1/api/controllers"
+	"github.com/nstoker/apiance1/api/models"
 )
 
 var server = controllers.Server{}

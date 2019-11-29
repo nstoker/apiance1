@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/neil-stoker/apiance1/api/models"
-	"github.com/neil-stoker/apiance1/api/responses"
-	"github.com/neil-stoker/apiance1/api/utils/formaterror"
+	"github.com/nstoker/apiance1/api/models"
+	"github.com/nstoker/apiance1/api/responses"
+	"github.com/nstoker/apiance1/api/utils/formaterror"
 )
 
 // Login logs a user in

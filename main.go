@@ -1,7 +1,11 @@
 package main
 
-import "github.com/neil-stoker/apiance1/api"
+import (
+	"log"
+
+	"github.com/nstoker/apiance1/api"
+)
 
 func main() {
-	api.Run()
+	log.Fatal(api.Run())
 }

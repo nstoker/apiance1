@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
+	"github.com/nstoker/apiance1/api/migrate"
 )
 
 // Server server
@@ -16,32 +16,32 @@ type Server struct {
 }
 
 // Initialize initialize
-func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
+func (server *Server) Initialize(databaseURI string) error {
 
-	// var err error
+	var err error
 
-	log.Fatal("Server:Initialize")
+	db, err := sqlx.Open("postgres", databaseURI)
+	if err != nil {
+		return fmt.Errorf("Server:Initialize error opening: %w", err)
+	}
 
-	// if Dbdriver == "postgres" {
-	// 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
-	// 	server.DB, err = gorm.Open(Dbdriver, DBURL)
-	// 	if err != nil {
-	// 		fmt.Printf("Cannot connect to %s database", Dbdriver)
-	// 		log.Fatal("This is the error:", err)
-	// 	} else {
-	// 		fmt.Printf("We are connected to the %s database", Dbdriver)
-	// 	}
-	// }
+	if err := db.Ping(); err != nil {
+		return fmt.Errorf("Server:Initialize error pinging %w", err)
+	}
 
-	// server.DB.Debug().AutoMigrate(&models.User{}, &models.Post{}) //database migration
+	if err := migrate.Perform(); err != nil {
+		return fmt.Errorf("Server:Initialize error migrating: %w", err)
+	}
 
 	server.Router = mux.NewRouter()
 
 	server.initializeRoutes()
+
+	return nil
 }
 
 // Run server, run. See server run
-func (server *Server) Run(addr string) {
+func (server *Server) Run(addr string) error {
 	fmt.Println("Listening to port 8080")
-	log.Fatal(http.ListenAndServe(addr, server.Router))
+	return fmt.Errorf("base.Run(): %w", http.ListenAndServe(addr, server.Router))
 }

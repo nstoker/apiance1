@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/neil-stoker/apiance1/api/models"
+	"github.com/nstoker/apiance1/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )
 
@@ -13,12 +13,12 @@ func TestFindAllUsers(t *testing.T) {
 
 	err := refreshUserTable()
 	if err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
 
 	seededUsers, err := seedUsers()
 	if err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
 	t.Logf("seededUsers: %+v", seededUsers)
 

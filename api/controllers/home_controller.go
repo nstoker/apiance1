@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/neil-stoker/apiance1/api/responses"
+	"github.com/nstoker/apiance1/api/responses"
 )
 
 // Home the home server

@@ -7,8 +7,6 @@ import (
 )
 
 func TestGetDatabaseConnection(t *testing.T) {
-	t.Logf("$USER %s", Getenv("USER"))
-
 	if err := godotenv.Load("../test.env"); err != nil {
 		t.Fatalf("Can't load `test.env`")
 	}

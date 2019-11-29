@@ -1,6 +1,6 @@
 package controllers
 
-import "github.com/neil-stoker/apiance1/api/middlewares"
+import "github.com/nstoker/apiance1/api/middlewares"
 
 func (s *Server) initializeRoutes() {
 
