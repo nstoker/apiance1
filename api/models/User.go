@@ -48,8 +48,6 @@ func (u *User) Prepare() {
 	u.ID = 0
 	u.Name = html.EscapeString(strings.TrimSpace(u.Name))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-	// u.CreatedAt = time.Now() // TODO: Fix me
-	// u.UpdatedAt = time.Now()
 }
 
 // Validate validates record
@@ -96,15 +94,18 @@ func (u *User) Validate(action string) error {
 	}
 }
 
-// SaveUser saves user
-func (u *User) SaveUser(db *sqlx.DB) (*User, error) {
+// CreateUser saves user
+func (u *User) CreateUser(db *sqlx.DB) (*User, error) {
+	hash, err := Hash(u.Password)
+	if err != nil {
+		return nil, err
+	}
+	sqlStatement := "INSERT INTO users (email, name, password) VALUES ($1, $2, $3) RETURNING id;"
+	err = db.QueryRow(sqlStatement, u.Email, u.Name, hash).Scan(&u.ID)
+	if err != nil {
+		return nil, fmt.Errorf("CreateUser: %w", err)
+	}
 
-	var err error
-	err = fmt.Errorf("Not Implement")
-	// err = db.Debug().Create(&u).Error
-	// if err != nil {
-	// 	return &User{}, err
-	// }
 	return u, err
 }
 
@@ -124,9 +125,11 @@ func (u *User) FindAllUsers(db *sqlx.DB) (*[]User, error) {
 func (u *User) FindUserByEmail(db *sqlx.DB, email string) (*User, error) {
 	sqlStatement := `SELECT id, name, email, created_at, updated_at FROM users WHERE email=$1`
 	row := db.QueryRow(sqlStatement, email)
-	err := row.Scan(&u.ID, u.Name, u.Email, u.CreatedAt, u.UpdatedAt)
-
-	return nil, err
+	err := row.Scan(&u.ID, &u.Name, &u.Email, &u.CreatedAt, &u.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
 }
 
 // FindUserByID finds a user by ... id

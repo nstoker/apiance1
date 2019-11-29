@@ -34,7 +34,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	userCreated, err := user.SaveUser(server.DB)
+	userCreated, err := user.CreateUser(server.DB)
 
 	if err != nil {
 

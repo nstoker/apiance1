@@ -42,7 +42,7 @@ func TestSaveUser(t *testing.T) {
 		Name:     "test",
 		Password: "password",
 	}
-	savedUser, err := newUser.SaveUser(server.DB)
+	savedUser, err := newUser.CreateUser(server.DB)
 	if err != nil {
 		t.Errorf("this is the error getting the users: %v\n", err)
 		return

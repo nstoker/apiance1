@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/nstoker/apiance1/api/controllers"
+	"github.com/nstoker/apiance1/api/migrate"
 	"github.com/nstoker/apiance1/api/models"
 	"github.com/nstoker/apiance1/utils"
 )
@@ -19,13 +20,14 @@ var userInstance = models.User{}
 
 func TestMain(m *testing.M) {
 	var err error
-	err = godotenv.Load(os.ExpandEnv("../../.env"))
+	log.Printf("$PWD '%s'", os.ExpandEnv("${PWD}"))
+	err = godotenv.Load("../../test.env")
 	if err != nil {
 		log.Fatalf("Error getting env %v\n", err)
 	}
-	err = server.Initialize(utils.GetDatabaseConnection())
-	if err != nil {
-		log.Printf("Error running server: %s", err)
+
+	if err = server.InitializeDatabase(utils.GetDatabaseConnection()); err != nil {
+		log.Printf("Error initializing database: %s", err)
 		os.Exit(1)
 	}
 
@@ -33,6 +35,18 @@ func TestMain(m *testing.M) {
 		log.Printf("Error dropping tables: %s", err)
 		os.Exit(2)
 	}
+
+	if err := migrate.Perform(); err != nil {
+		log.Printf("Error migrating tables: %s", err)
+		os.Exit(3)
+	}
+
+	if err = server.InitializeRouter(); err != nil {
+		log.Printf("Error initialising router: %s", err)
+		os.Exit(4)
+	}
+
+	// We (probably) don't need to run a seeder on the test database.
 
 	os.Exit(m.Run())
 }
