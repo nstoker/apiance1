@@ -58,16 +58,14 @@ func TestMain(m *testing.M) {
 }
 
 func clearTables() error {
-	// tables := []string{"users"}
+	tables := []string{"users"}
 
-	// for _, t := range tables {
-	// 	log.Printf("Clearing '%s'", t)
-	// 	sqlStatement := fmt.Sprintf("DELETE FROM %s;", t)
-	// 	_, err := server.DB.Exec(sqlStatement)
-	// 	if err != nil {
-	// 		return fmt.Errorf("Error clearing '%s' with '%s': %w", t, sqlStatement, err)
-	// 	}
-	// }
+	for _, t := range tables {
+		err := refreshTable(t)
+		if err != nil {
+			return fmt.Errorf("Error clearing '%s' with '%s': %w", t, sqlStatement, err)
+		}
+	}
 
 	return nil
 }
