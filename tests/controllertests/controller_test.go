@@ -44,7 +44,7 @@ func Database() {
 	// }
 }
 
-func refreshUserTable() error {
+func refreshTable(table string) error {
 	err := fmt.Errorf("refreshUserTable not implemented")
 	// server.DB.DropTableIfExists(&models.User{}).Error
 	// if err != nil {
@@ -58,52 +58,48 @@ func refreshUserTable() error {
 	return err
 }
 
-func seedOneUser() (models.User, error) {
+func seedOneUser() (*models.User, error) {
 
-	// err := refreshUserTable()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	err := refreshTable("users")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// user := models.User{
-	// 	Name:     "Pet",
-	// 	Email:    fmt.Sprintf("%s@example.com", models.GenKsuid()),
-	// 	Password: "password",
-	// }
+	user := models.User{
+		Name:     "Pet",
+		Email:    fmt.Sprintf("%s@example.com", models.GenKsuid()),
+		Password: "password",
+	}
 
-	// err = server.DB.Model(&models.User{}).Create(&user).Error
-	// if err != nil {
-	// 	return models.User{}, err
-	// }
-	// return user, nil
-	return models.User{}, fmt.Errorf("seedOneUser Not Implemented")
+	newUser, err := user.CreateUser(server.DB)
+
+	if err != nil {
+		return &models.User{}, err
+	}
+
+	return newUser, nil
 }
 
 func seedUsers() ([]models.User, error) {
+	users := []models.User{
+		models.User{
+			Name:     "Steven victor",
+			Email:    fmt.Sprintf("%s@example.com", models.GenKsuid()),
+			Password: "password",
+		},
+		models.User{
+			Name:     "Kenny Morris",
+			Email:    fmt.Sprintf("%s@example.com", models.GenKsuid()),
+			Password: "password",
+		},
+	}
+	for _, u := range users {
+		user, err := u.CreateUser(server.DB)
+		if err != nil {
+			return []models.User{}, err
+		}
 
-	var err error
-	users := []models.User{}
-	err = fmt.Errorf("seedUsers Not Implemented")
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// users := []models.User{
-	// 	models.User{
-	// 		Name:     "Steven victor",
-	// 		Email:    fmt.Sprintf("%s@example.com", models.GenKsuid()),
-	// 		Password: "password",
-	// 	},
-	// 	models.User{
-	// 		Name:     "Kenny Morris",
-	// 		Email:    fmt.Sprintf("%s@example.com", models.GenKsuid()),
-	// 		Password: "password",
-	// 	},
-	// }
-	// for i := range users {
-	// 	err := server.DB.Model(&models.User{}).Create(&users[i]).Error
-	// 	if err != nil {
-	// 		return []models.User{}, err
-	// 	}
-	// }
-	return users, err
+		users = append(users, *user)
+	}
+	return users, nil
 }
