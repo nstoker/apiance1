@@ -11,6 +11,7 @@ import (
 	"github.com/nstoker/apiance1/api/migrate"
 	"github.com/nstoker/apiance1/api/models"
 	"github.com/nstoker/apiance1/utils"
+	"github.com/pkg/errors"
 )
 
 var server = controllers.Server{}
@@ -63,7 +64,7 @@ func clearTables() error {
 	for _, t := range tables {
 		err := refreshTable(t)
 		if err != nil {
-			return fmt.Errorf("Error clearing '%s' with '%s': %w", t, sqlStatement, err)
+			return errors.Wrapf(err, "clearTables() %s", t)
 		}
 	}
 
