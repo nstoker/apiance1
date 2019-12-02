@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(GetProjectRoot()); err != nil {
 		log.Printf(".env file not found")
 	}
 }
@@ -29,4 +29,3 @@ func GetEnvWithError(envVar string) string {
 
 	return value
 }
-

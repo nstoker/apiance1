@@ -13,7 +13,7 @@ import (
 
 // Perform will perform the migrations.
 func Perform() error {
-	const migrationDir = "file://api/migrate/files"
+	var migrationDir = fmt.Sprintf("file://%s/api/migrate/files", utils.GetProjectRoot())
 
 	m, err := migrate.New(migrationDir, utils.GetDatabaseConnection())
 	if err != nil {

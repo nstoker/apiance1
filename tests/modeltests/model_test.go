@@ -21,7 +21,7 @@ var userInstance = models.User{}
 func TestMain(m *testing.M) {
 	var err error
 	log.Printf("$PWD '%s'", os.ExpandEnv("${PWD}"))
-	err = godotenv.Load("../../test.env")
+	err = godotenv.Load(fmt.Sprintf("%s/test.env", utils.GetProjectRoot()))
 	if err != nil {
 		log.Fatalf("Error getting env %v\n", err)
 	}
