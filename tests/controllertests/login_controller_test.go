@@ -15,14 +15,14 @@ import (
 
 func TestSignIn(t *testing.T) {
 	// This block is also done in seedOneUser
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	user, err := seedOneUser()
 	if err != nil {
-		fmt.Printf("This is the error %v\n", err)
+		fmt.Printf("TestCreateUser error %v\n", err)
 	}
 
 	samples := []struct {
@@ -60,11 +60,11 @@ func TestSignIn(t *testing.T) {
 
 func TestLogin(t *testing.T) {
 
-	refreshUserTable()
+	refreshTable("users")
 
 	seededUser, err := seedOneUser()
 	if err != nil {
-		fmt.Printf("This is the error %v\n", err)
+		fmt.Printf("TestLogin error %v\n", err)
 	}
 	samples := []struct {
 		inputJSON    string
@@ -113,7 +113,7 @@ func TestLogin(t *testing.T) {
 	for _, v := range samples {
 		req, err := http.NewRequest("POST", "/login", bytes.NewBufferString(v.inputJSON))
 		if err != nil {
-			t.Errorf("this is the error: %v", err)
+			t.Errorf("TestLogin error: %v", err)
 		}
 		rr := httptest.NewRecorder()
 		handler := http.HandlerFunc(server.Login)

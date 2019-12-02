@@ -3,14 +3,12 @@ package utils
 import (
 	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 func init() {
-	if err := godotenv.Load(GetProjectRoot()); err != nil {
-		log.Printf(".env file not found")
-	}
+	// if err := godotenv.Load(GetProjectRoot() + "/"); err != nil {
+	// 	log.Printf(".env file not found in %s", GetProjectRoot())
+	// }
 }
 
 // Getenv returns the environment variable

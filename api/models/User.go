@@ -165,7 +165,17 @@ func (u *User) UpdateAUser(db *sqlx.DB, uid uint32) (*User, error) {
 		log.Fatal(err)
 	}
 	// See https://www.calhoun.io/updating-and-deleting-postgresql-records-using-gos-sql-package/
-	sqlStatement := `UPDATE users SET email=$2, name=$3 WHERE id=$4;`
+	sqlStatement := `UPDATE users SET email=$2, name=$3 WHERE id=$1;`
+	res, err := db.Exec(sqlStatement, uid, u.Email, u.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = res.RowsAffected()
+	if err != nil {
+		return nil, err
+	}
+
 	return u, nil
 }
 

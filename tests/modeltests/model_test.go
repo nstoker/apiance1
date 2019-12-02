@@ -26,18 +26,24 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Error getting env %v\n", err)
 	}
 
+	dbName := os.Getenv("DATABASE_NAME")
+	expectedDbName := "apiance1_api_test"
+	if dbName != expectedDbName {
+		log.Fatalf("Error getting database name, got '%s' want '%s'", dbName, expectedDbName)
+	}
+
 	if err = server.InitializeDatabase(utils.GetDatabaseConnection()); err != nil {
 		log.Printf("Error initializing database: %s", err)
 		os.Exit(1)
 	}
 
-	if err := dropTables(); err != nil {
-		log.Printf("Error dropping tables: %s", err)
+	if err := migrate.Down(); err != nil {
+		log.Printf("Error reversing migrations: %s", err)
 		os.Exit(2)
 	}
 
-	if err := migrate.Perform(); err != nil {
-		log.Printf("Error migrating tables: %s", err)
+	if err := migrate.Up(); err != nil {
+		log.Printf("Error migrating tables: %v", err)
 		os.Exit(3)
 	}
 
@@ -51,36 +57,34 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func dropTables() error {
-	tables := []string{"users"}
+func clearTables() error {
+	// tables := []string{"users"}
 
-	for _, t := range tables {
-		log.Printf("Dropping %s", t)
-		_, err := server.DB.Exec("DROP TABLE  $1", t)
-		if err != nil {
-			return fmt.Errorf("Error dropping '%s': %w", t, err)
-		}
+	// for _, t := range tables {
+	// 	log.Printf("Clearing '%s'", t)
+	// 	sqlStatement := fmt.Sprintf("DELETE FROM %s;", t)
+	// 	_, err := server.DB.Exec(sqlStatement)
+	// 	if err != nil {
+	// 		return fmt.Errorf("Error clearing '%s' with '%s': %w", t, sqlStatement, err)
+	// 	}
+	// }
+
+	return nil
+}
+
+func refreshTable(table string) error {
+	sqlStatement := fmt.Sprintf(`DELETE FROM %s;`, table)
+	_, err := server.DB.Exec(sqlStatement)
+	if err != nil {
+		return fmt.Errorf("Error clearing %s: %v", table, err)
 	}
 
 	return nil
 }
 
-func refreshUserTable() error {
-	// err := server.DB.DropTableIfExists(&models.User{}).Error
-	// if err != nil {
-	// 	return err
-	// }
-	// err = server.DB.AutoMigrate(&models.User{}).Error
-	// if err != nil {
-	// 	return err
-	// }
+func seedOneUser() (*models.User, error) {
 
-	return nil
-}
-
-func seedOneUser() (models.User, error) {
-
-	refreshUserTable()
+	refreshTable("users")
 
 	user := models.User{
 		Name:     "Pet",
@@ -88,14 +92,17 @@ func seedOneUser() (models.User, error) {
 		Password: "password",
 	}
 
+	newUser, err := user.CreateUser(server.DB)
+
 	// err := server.DB.Model(&models.User{}).Create(&user).Error
-	// if err != nil {
-	// 	log.Fatalf("cannot seed users table: %v", err)
-	// }
-	return user, fmt.Errorf("seedOneUser Not Implemented")
+	if err != nil {
+		return nil, fmt.Errorf("cannot seed users table: %v", err)
+	}
+	return newUser, nil
 }
 
 func seedUsers() ([]models.User, error) {
+	newUsers := []models.User{}
 
 	users := []models.User{
 		models.User{
@@ -110,12 +117,13 @@ func seedUsers() ([]models.User, error) {
 		},
 	}
 
-	err := fmt.Errorf("seedUses Not Implemented")
-	// for i := range users {
-	// 	err := server.DB.Model(&models.User{}).Create(&users[i]).Error
-	// 	if err != nil {
-	// 		return []models.User{}, err
-	// 	}
-	// }
-	return users, err
+	for _, u := range users {
+		user, err := u.CreateUser(server.DB)
+		if err != nil {
+			return []models.User{}, err
+		}
+
+		newUsers = append(newUsers, *user)
+	}
+	return users, nil
 }

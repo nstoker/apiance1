@@ -29,7 +29,7 @@ func Run() error {
 		return err
 	}
 
-	if err := migrate.Perform(); err != nil {
+	if err := migrate.Up(); err != nil {
 		return err
 	}
 

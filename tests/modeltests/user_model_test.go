@@ -11,7 +11,7 @@ import (
 
 func TestFindAllUsers(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,7 +24,7 @@ func TestFindAllUsers(t *testing.T) {
 
 	users, err := userInstance.FindAllUsers(server.DB)
 	if err != nil {
-		t.Errorf("this is the error getting the users: %v\n", err)
+		t.Errorf("TestUpdateUser error getting the users: %v\n", err)
 		return
 	}
 	assert.Equal(t, len(*users), 2)
@@ -32,7 +32,7 @@ func TestFindAllUsers(t *testing.T) {
 
 func TestSaveUser(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func TestSaveUser(t *testing.T) {
 	}
 	savedUser, err := newUser.CreateUser(server.DB)
 	if err != nil {
-		t.Errorf("this is the error getting the users: %v\n", err)
+		t.Errorf("TestSaveError error getting the users: %v\n", err)
 		return
 	}
 	assert.Equal(t, newUser.ID, savedUser.ID)
@@ -54,7 +54,7 @@ func TestSaveUser(t *testing.T) {
 
 func TestGetUserByID(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,7 +65,7 @@ func TestGetUserByID(t *testing.T) {
 	}
 	foundUser, err := userInstance.FindUserByID(server.DB, user.ID)
 	if err != nil {
-		t.Errorf("this is the error getting one user: %v\n", err)
+		t.Errorf("TestGetUserById error getting one user: %v\n", err)
 		return
 	}
 	assert.Equal(t, foundUser.ID, user.ID)
@@ -75,7 +75,7 @@ func TestGetUserByID(t *testing.T) {
 
 func TestUpdateAUser(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +93,7 @@ func TestUpdateAUser(t *testing.T) {
 	}
 	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)
 	if err != nil {
-		t.Errorf("this is the error updating the user: %v\n", err)
+		t.Errorf("TestUpdateAUser error updating the user: %w\n", err)
 		return
 	}
 	assert.Equal(t, updatedUser.ID, userUpdate.ID)
@@ -103,7 +103,7 @@ func TestUpdateAUser(t *testing.T) {
 
 func TestDeleteAUser(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,14 +114,13 @@ func TestDeleteAUser(t *testing.T) {
 		log.Fatalf("Cannot seed user: %v\n", err)
 	}
 
-	isDeleted, err := userInstance.DeleteAUser(server.DB, user.ID)
+	isDeleted, err := userInstance.DeleteAUser(server.DB, int64(user.ID))
 	if err != nil {
-		t.Errorf("this is the error updating the user: %v\n", err)
+		t.Errorf("TestDeleteUser error updating the user: %v\n", err)
 		return
 	}
-	//one shows that the record has been deleted or:
-	// assert.Equal(t, int(isDeleted), 1)
 
-	//Can be done this way too
-	assert.Equal(t, isDeleted, int64(1))
+	if isDeleted != 1 {
+		t.Errorf("expected one record to be deleted, got %d", isDeleted)
+	}
 }
