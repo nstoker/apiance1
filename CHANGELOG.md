@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.0.1 2019-12-02
+
 All basic tests working. Several are tagged with 'not implemented', but don't appear to be getting called.
 
 ## 0.0.0 2019-11-29
