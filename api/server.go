@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/nstoker/apiance1/api/controllers"
+	"github.com/nstoker/apiance1/api/migrate"
 	"github.com/nstoker/apiance1/api/seed"
 	"github.com/nstoker/apiance1/utils"
 )
@@ -20,11 +21,21 @@ func Run() error {
 		return fmt.Errorf("server.Run() Error getting env, not comming through %w", err)
 	}
 
-	if err := server.Initialize(utils.GetDatabaseConnection()); err != nil {
-		return fmt.Errorf("server.Run(): %w", err)
+	if err := server.InitializeDatabase(utils.GetDatabaseConnection()); err != nil {
+		return err
 	}
 
-	seed.Load(server.DB)
+	if err := server.InitializeRouter(); err != nil {
+		return err
+	}
+
+	if err := migrate.Up(); err != nil {
+		return err
+	}
+
+	if err := seed.Load(server.DB); err != nil {
+		return err
+	}
 	port := os.Getenv("PORT")
 	return server.Run(":" + port)
 }

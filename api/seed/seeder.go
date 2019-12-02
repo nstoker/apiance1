@@ -1,6 +1,7 @@
 package seed
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -21,9 +22,51 @@ var users = []models.User{
 }
 
 // Load loads the seeds
-func Load(db *sqlx.DB) {
+func Load(db *sqlx.DB) error {
 
-	log.Fatalf("Seeder:Load Not Implemented")
+	users := []models.User{
+		{
+			Name:     "Neil Stoker",
+			Email:    "neil.stoker@koiostechnology.co.uk",
+			Password: "changeme",
+		},
+	}
+
+	for _, u := range users {
+		if db == nil {
+			log.Fatal("db is null")
+		}
+		_, err := u.FindUserByEmail(db, u.Email)
+		if err == nil {
+			// Found the user, so
+			continue
+		} else if err == sql.ErrNoRows {
+			_, err := u.CreateUser(db)
+			if err != nil {
+				return nil
+			}
+
+			continue
+
+		} else {
+			log.Fatal("Seeding stopped %w", err)
+		}
+		// switch err {
+		// case sql.ErrNoRows:
+		// 	// Add the record
+		// 	_, err := u.CreateUser(db)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// case nil:
+		// 	// User record exists, so leave it alone
+		// 	continue
+		// default:
+		// 	return err
+		// }
+	}
+
+	return nil
 	// err := db.Debug().DropTableIfExists(&models.User{}).Error
 	// if err != nil {
 	// 	log.Fatalf("cannot drop table: %v", err)

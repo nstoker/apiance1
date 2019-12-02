@@ -16,7 +16,7 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +72,7 @@ func TestCreateUser(t *testing.T) {
 
 		req, err := http.NewRequest("POST", "/users", bytes.NewBufferString(v.inputJSON))
 		if err != nil {
-			t.Errorf("this is the error: %v", err)
+			t.Errorf("TestCreateUser error: %v", err)
 		}
 		rr := httptest.NewRecorder()
 		handler := http.HandlerFunc(server.CreateUser)
@@ -99,7 +99,7 @@ func TestCreateUser(t *testing.T) {
 
 func TestGetUsers(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func TestGetUsers(t *testing.T) {
 	}
 	req, err := http.NewRequest("GET", "/users", nil)
 	if err != nil {
-		t.Errorf("this is the error: %v\n", err)
+		t.Errorf("TestGetUsers error: %v\n", err)
 	}
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(server.GetUsers)
@@ -126,7 +126,7 @@ func TestGetUsers(t *testing.T) {
 
 func TestGetUserByID(t *testing.T) {
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -156,7 +156,7 @@ func TestGetUserByID(t *testing.T) {
 
 		req, err := http.NewRequest("GET", "/users", nil)
 		if err != nil {
-			t.Errorf("This is the error: %v\n", err)
+			t.Errorf("TestGetUserByID error: %v\n", err)
 		}
 		req = mux.SetURLVars(req, map[string]string{"id": v.id})
 		rr := httptest.NewRecorder()
@@ -183,7 +183,7 @@ func TestUpdateUser(t *testing.T) {
 	var AuthEmail, AuthPassword string
 	var AuthID uint32
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -309,7 +309,7 @@ func TestUpdateUser(t *testing.T) {
 
 		req, err := http.NewRequest("POST", "/users", bytes.NewBufferString(v.updateJSON))
 		if err != nil {
-			t.Errorf("This is the error: %v\n", err)
+			t.Errorf("TestUpdateUser error: %v\n", err)
 		}
 		req = mux.SetURLVars(req, map[string]string{"id": v.id})
 
@@ -345,7 +345,7 @@ func TestDeleteUser(t *testing.T) {
 	var AuthEmail, AuthPassword string
 	var AuthID uint32
 
-	err := refreshUserTable()
+	err := refreshTable("users")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -414,7 +414,7 @@ func TestDeleteUser(t *testing.T) {
 
 		req, err := http.NewRequest("GET", "/users", nil)
 		if err != nil {
-			t.Errorf("This is the error: %v\n", err)
+			t.Errorf("TestDeleteUser error: %v\n", err)
 		}
 		req = mux.SetURLVars(req, map[string]string{"id": v.id})
 		rr := httptest.NewRecorder()

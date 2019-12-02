@@ -8,8 +8,10 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/nstoker/apiance1/api/controllers"
+	"github.com/nstoker/apiance1/api/migrate"
 	"github.com/nstoker/apiance1/api/models"
 	"github.com/nstoker/apiance1/utils"
+	"github.com/pkg/errors"
 )
 
 var server = controllers.Server{}
@@ -19,54 +21,69 @@ var userInstance = models.User{}
 
 func TestMain(m *testing.M) {
 	var err error
-	err = godotenv.Load(os.ExpandEnv("../../.env"))
+	log.Printf("$PWD '%s'", os.ExpandEnv("${PWD}"))
+	err = godotenv.Load(fmt.Sprintf("%s/test.env", utils.GetProjectRoot()))
 	if err != nil {
 		log.Fatalf("Error getting env %v\n", err)
 	}
-	err = server.Initialize(utils.GetDatabaseConnection())
-	if err != nil {
-		log.Printf("Error running server: %s", err)
+
+	dbName := os.Getenv("DATABASE_NAME")
+	expectedDbName := "apiance1_api_test"
+	if dbName != expectedDbName {
+		log.Fatalf("Error getting database name, got '%s' want '%s'", dbName, expectedDbName)
+	}
+
+	if err = server.InitializeDatabase(utils.GetDatabaseConnection()); err != nil {
+		log.Printf("Error initializing database: %s", err)
 		os.Exit(1)
 	}
 
-	if err := dropTables(); err != nil {
-		log.Printf("Error dropping tables: %s", err)
+	if err := migrate.Down(); err != nil {
+		log.Printf("Error reversing migrations: %s", err)
 		os.Exit(2)
 	}
+
+	if err := migrate.Up(); err != nil {
+		log.Printf("Error migrating tables: %v", err)
+		os.Exit(3)
+	}
+
+	if err = server.InitializeRouter(); err != nil {
+		log.Printf("Error initialising router: %s", err)
+		os.Exit(4)
+	}
+
+	// We (probably) don't need to run a seeder on the test database.
 
 	os.Exit(m.Run())
 }
 
-func dropTables() error {
+func clearTables() error {
 	tables := []string{"users"}
 
 	for _, t := range tables {
-		log.Printf("Dropping %s", t)
-		_, err := server.DB.Exec("DROP TABLE  $1", t)
+		err := refreshTable(t)
 		if err != nil {
-			return fmt.Errorf("Error dropping '%s': %w", t, err)
+			return errors.Wrapf(err, "clearTables() %s", t)
 		}
 	}
 
 	return nil
 }
 
-func refreshUserTable() error {
-	// err := server.DB.DropTableIfExists(&models.User{}).Error
-	// if err != nil {
-	// 	return err
-	// }
-	// err = server.DB.AutoMigrate(&models.User{}).Error
-	// if err != nil {
-	// 	return err
-	// }
+func refreshTable(table string) error {
+	sqlStatement := fmt.Sprintf(`DELETE FROM %s;`, table)
+	_, err := server.DB.Exec(sqlStatement)
+	if err != nil {
+		return fmt.Errorf("Error clearing %s: %v", table, err)
+	}
 
 	return nil
 }
 
-func seedOneUser() (models.User, error) {
+func seedOneUser() (*models.User, error) {
 
-	refreshUserTable()
+	refreshTable("users")
 
 	user := models.User{
 		Name:     "Pet",
@@ -74,14 +91,17 @@ func seedOneUser() (models.User, error) {
 		Password: "password",
 	}
 
+	newUser, err := user.CreateUser(server.DB)
+
 	// err := server.DB.Model(&models.User{}).Create(&user).Error
-	// if err != nil {
-	// 	log.Fatalf("cannot seed users table: %v", err)
-	// }
-	return user, fmt.Errorf("seedOneUser Not Implemented")
+	if err != nil {
+		return nil, fmt.Errorf("cannot seed users table: %v", err)
+	}
+	return newUser, nil
 }
 
 func seedUsers() ([]models.User, error) {
+	newUsers := []models.User{}
 
 	users := []models.User{
 		models.User{
@@ -96,12 +116,13 @@ func seedUsers() ([]models.User, error) {
 		},
 	}
 
-	err := fmt.Errorf("seedUses Not Implemented")
-	// for i := range users {
-	// 	err := server.DB.Model(&models.User{}).Create(&users[i]).Error
-	// 	if err != nil {
-	// 		return []models.User{}, err
-	// 	}
-	// }
-	return users, err
+	for _, u := range users {
+		user, err := u.CreateUser(server.DB)
+		if err != nil {
+			return []models.User{}, err
+		}
+
+		newUsers = append(newUsers, *user)
+	}
+	return users, nil
 }
