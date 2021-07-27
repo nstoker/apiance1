@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+[CVE-2020-26160](https://github.com/advisories/GHSA-w73w-5m7g-f7qc). jwt-go allows attackers to bypass intended access restrictions in situations with []string{} for m["aud"] (which is allowed by the specification). Because the type assertion fails, "" is the value of aud. This is a security problem if the JWT token is presented to a service that lacks its own audience check. There is no patch available and users of jwt-go are advised to migrate to [golang-jwt](https://github.com/golang-jwt/jwt) at version 3.2.1.
+
 ## 0.0.1 2019-12-02
 
 All basic tests working. Several are tagged with 'not implemented', but don't appear to be getting called.
