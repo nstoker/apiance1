@@ -21,6 +21,7 @@ require (
 	github.com/containerd/containerd v1.5.8 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/opencontainers/image-spec v1.0.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
+	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 )
