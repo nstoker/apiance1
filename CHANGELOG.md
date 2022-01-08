@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Upgrade github.com/containerd/containerd to version 1.5.9 for [GHSA-mvff-h3cj-wj9c](https://github.com/advisories/GHSA-mvff-h3cj-wj9c).
+
 Updated some packages.
 
 Added alert if local `.env` missing (non-fatal).
