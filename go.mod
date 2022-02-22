@@ -19,6 +19,7 @@ require (
 
 require (
 	github.com/containerd/containerd v1.5.9 // indirect
+	github.com/docker/distribution v2.8.0+incompatible // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
