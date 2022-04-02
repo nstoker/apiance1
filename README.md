@@ -6,6 +6,8 @@ Loosly following the [crud restful api with go gorm jwt postgres and testing](ht
 
 Goconvey command line `go convey --host 0.0.0.0`.
 
+Updating dependancies `go get -u ./...`
+
 ## Database
 
 The database used is postgres, the connection for that is expected to be in an environment variable. For local testing, the `.env` will contain the developers credentials. An example version is `.env.example`.
