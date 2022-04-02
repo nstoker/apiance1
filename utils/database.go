@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 )
 
 // GetDatabaseConnectionString gets the database string given
@@ -11,7 +12,7 @@ func GetDatabaseConnectionString(connection, host, name, pass, port, user string
 	if connection == "" {
 		connection = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, pass, host, port, name)
 	}
-
+	log.Printf("connection: %s", connection)
 	return connection
 }
 

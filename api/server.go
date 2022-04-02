@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -9,16 +8,16 @@ import (
 	"github.com/nstoker/apiance1/api/migrate"
 	"github.com/nstoker/apiance1/api/seed"
 	"github.com/nstoker/apiance1/utils"
+	"github.com/sirupsen/logrus"
 )
 
 var server = controllers.Server{}
 
 // Run server, run.
 func Run() error {
-	var err error
-	err = godotenv.Load()
+	err := godotenv.Load()
 	if err != nil {
-		return fmt.Errorf("server.Run() Error getting env, not comming through %w", err)
+		logrus.Info(err)
 	}
 
 	if err := server.InitializeDatabase(utils.GetDatabaseConnection()); err != nil {
