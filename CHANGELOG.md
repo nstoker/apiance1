@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## v0.0.3 2022-04-03
+
+Updated further dependancies with `go list -u -m all | go get -u`. Added a variety of `.env` files
+
 ## 0.0.2 2022-04-02
 
 Updated to go 1.18. Updated many dependancies.
@@ -16,7 +20,6 @@ Upgrade github.com/containerd/containerd to version 1.5.9 for [GHSA-mvff-h3cj-wj
 Updated some packages.
 
 Added alert if local `.env` missing (non-fatal).
-
 
 ## 0.0.1 2019-12-02
 

@@ -93,7 +93,7 @@ func TestUpdateAUser(t *testing.T) {
 	}
 	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)
 	if err != nil {
-		t.Errorf("TestUpdateAUser error updating the user: %w\n", err)
+		t.Errorf("TestUpdateAUser error updating the user: %v\n", err)
 		return
 	}
 	assert.Equal(t, updatedUser.ID, userUpdate.ID)
