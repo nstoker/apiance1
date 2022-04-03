@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## v0.0.3.1 2022-04-03
+
+Further updates to dependancies.
+
 ## v0.0.3 2022-04-03
 
 Updated further dependancies with `go list -u -m all | go get -u`. Added a variety of `.env` files
