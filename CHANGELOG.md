@@ -17,7 +17,6 @@ Updated some packages.
 
 Added alert if local `.env` missing (non-fatal).
 
-
 ## 0.0.1 2019-12-02
 
 All basic tests working. Several are tagged with 'not implemented', but don't appear to be getting called.

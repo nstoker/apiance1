@@ -6,7 +6,7 @@ Loosly following the [crud restful api with go gorm jwt postgres and testing](ht
 
 Goconvey command line `go convey --host 0.0.0.0`.
 
-Updating dependancies `go get -u ./...`
+Updating dependancies `go get -u ./...` did not catch all of them `go list -u -m all | go get -u` seems to work better.
 
 ## Database
 
