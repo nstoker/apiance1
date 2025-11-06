@@ -1,6 +1,6 @@
 module github.com/nstoker/apiance1
 
-go 1.18
+go 1.23.0
 
 require (
 	github.com/badoux/checkmail v1.2.1
@@ -12,18 +12,20 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.9.3
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.40.0
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )
 
 require (
-	github.com/containerd/containerd v1.6.38 // indirect
+	github.com/Microsoft/go-winio v0.6.2 // indirect
+	github.com/docker/docker v23.0.3+incompatible // indirect
+	github.com/docker/go-units v0.5.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/opencontainers/image-spec v1.1.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20231002182017-d307bd883b97 // indirect
+	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
 )
